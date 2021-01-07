@@ -245,7 +245,7 @@ ML_SA_CG<BasicTurbulenceModel>::ML_SA_CG
             0.3
         )
     ),
-    /*hh_
+    hh_
     (
         dimensioned<scalar>::lookupOrAddToDict // This is the relative step height
         (
@@ -253,8 +253,7 @@ ML_SA_CG<BasicTurbulenceModel>::ML_SA_CG
             this->coeffDict_,
             1.0
         )
-    ),
-    */
+    ), 
     nuTilda_
     (
         IOobject
@@ -424,11 +423,8 @@ void ML_SA_CG<BasicTurbulenceModel>::run_ml_graph(double* mean_array, double* st
 
     volScalarField cx_ = this->mesh_.C().component(vector::X);
     volScalarField cy_ = this->mesh_.C().component(vector::Y);
-    volScalarField hh_ = cy_ - min(cy_)
-    
-    //Check the code to 
 
-    std::cout << "/* Value of relative step height (hh_) is */" << hh_<<std::endl;
+    std::cout << "/* Value of relative step height (hh_) is */" << hh_.value() <<std::endl;
 
     // #pragma omp parallel for
     forAll(u_.internalField(), id) // for boundary field use u_.boundaryField()
@@ -439,7 +435,7 @@ void ML_SA_CG<BasicTurbulenceModel>::run_ml_graph(double* mean_array, double* st
         float i3 = (cx_[id] - mean_array[2])/(std_array[2]);
         float i4 = (cy_[id] - mean_array[3])/(std_array[3]);
         //float i5 = ((cy_[id] + 25.4)- mean_array[4])/(std_array[4]);
-	float i5 = (hh_[id] - mean_array[4])/(std_array[4]);
+	float i5 = (hh_.value() - mean_array[4])/(std_array[4]);
         
         input_vals[id][0] = i1;
         input_vals[id][1] = i2;
